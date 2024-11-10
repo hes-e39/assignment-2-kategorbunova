@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { STATUS } from '../../utils/constants';
 import type { StatusType } from '../../utils/constants';
-import { DisplayForText, DisplayForTime, convertToSeconds } from '../../utils/helpers';
-import { Button, Buttons, Input, Inputs, SupportText, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
+import { DisplayForTime, convertToSeconds } from '../../utils/helpers';
+import { Input, Inputs, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 
 const Countdown = () => {
     const [timeMinInput, setTimeMinInput] = useState('');
@@ -93,7 +93,7 @@ const Countdown = () => {
                         <Inputs>
                             <Input>
                                 <input
-                                    style={{ maxWidth: '3rem', border: '0px solid white', fontSize: '2rem', textAlign: 'right' }}
+                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
                                     id="timeMinInput"
                                     placeholder="10"
                                     value={timeMinInput}
@@ -106,7 +106,7 @@ const Countdown = () => {
                             <Input>
                                 :
                                 <input
-                                    style={{ maxWidth: '3rem', border: '0px solid white', fontSize: '2rem', textAlign: 'left' }}
+                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
                                     id="timeInput"
                                     value={timeSecInput}
                                     placeholder="00"
@@ -127,12 +127,12 @@ const Countdown = () => {
                     )}
                 </Timer>
 
-                {/* DYMANIC TEXT LINE*/}
+                {/* DYMANIC TEXT LINE */}
 
                 {/* Show this text at initial state*/}
-                {status === STATUS.INITIAL && <SupportText>Please input time for a countdown above</SupportText>}
+                {/* {status === STATUS.INITIAL && <SupportText>Please input time for a countdown above</SupportText>} */}
 
-                {/* Show this text when timer in progress */}
+                {/* Show this text when timer in progress
                 {status !== STATUS.INITIAL && status !== STATUS.FASTFORWARDED && secondsRemaining !== 0 && (
                     <SupportText>
                         In progress: countdown for
@@ -140,17 +140,17 @@ const Countdown = () => {
                     </SupportText>
                 )}
 
-                {/* Show this text when timer is finished or fastforwarded */}
+                Show this text when timer is finished or fastforwarded
                 {(status === STATUS.FASTFORWARDED || (secondsRemaining === 0 && status !== STATUS.INITIAL)) && (
                     <SupportText>
                         Finished: countdown for
                         <DisplayForText totalSeconds={totalSeconds} timeSecInput={timeSecInput} />
                     </SupportText>
-                )}
+                )} */}
 
-                {/* DYMANIC BUTTONS*/}
+                {/* DYMANIC BUTTONS */}
 
-                <Buttons>
+                {/* <Buttons>
                     {status !== STATUS.FASTFORWARDED && (secondsRemaining !== 0 || status === STATUS.INITIAL) && (
                         <Button onClick={startStopCountdown} isActive={status === STATUS.STARTED}>
                             {status === STATUS.STARTED ? 'Pause' : 'Start'}
@@ -174,7 +174,7 @@ const Countdown = () => {
                             Forward
                         </Button>
                     )}
-                </Buttons>
+                </Buttons> */}
             </TimerContainer>
         </div>
     );

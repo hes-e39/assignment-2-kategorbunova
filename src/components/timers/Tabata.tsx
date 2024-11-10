@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { STATUS } from '../../utils/constants';
 import type { StatusType } from '../../utils/constants';
-import { DisplayForText, DisplayForTime, TimeOnTimer, convertToSeconds } from '../../utils/helpers';
-import { Button, Buttons, Input, Inputs, SupportText, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
+import { DisplayForTime, TimeOnTimer, convertToSeconds } from '../../utils/helpers';
+import { Input, Inputs, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 
 const Tabata = () => {
     const [timeMinInputRest, setTimeMinInputRest] = useState('');
@@ -147,7 +147,7 @@ const Tabata = () => {
                         <Inputs>
                             <Input>
                                 <input
-                                    style={{ maxWidth: '2.5rem', border: '0px solid white', fontSize: '2rem', textAlign: 'right' }}
+                                    style={{ maxWidth: 'auto', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
                                     id="timeMinInput"
                                     placeholder="10"
                                     value={timeMinInputWork}
@@ -160,7 +160,7 @@ const Tabata = () => {
                             <Input>
                                 :
                                 <input
-                                    style={{ maxWidth: '2.5rem', border: '0px solid white', fontSize: '2rem', textAlign: 'left' }}
+                                    style={{ maxWidth: 'auto', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
                                     id="timeInput"
                                     value={timeSecInputWork}
                                     placeholder="00"
@@ -172,7 +172,7 @@ const Tabata = () => {
                             </Input>
                             <Input>
                                 <input
-                                    style={{ maxWidth: '2.5rem', border: '0px solid white', fontSize: '2rem', textAlign: 'right' }}
+                                    style={{ maxWidth: 'auto', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
                                     id="timeMinInput"
                                     placeholder="10"
                                     value={timeMinInputRest}
@@ -185,7 +185,7 @@ const Tabata = () => {
                             <Input>
                                 :
                                 <input
-                                    style={{ maxWidth: '2.7rem', border: '0px solid white', fontSize: '2rem', textAlign: 'left' }}
+                                    style={{ maxWidth: 'auto', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
                                     id="timeInput"
                                     value={timeSecInputRest}
                                     placeholder="00"
@@ -198,7 +198,7 @@ const Tabata = () => {
                             x
                             <Input>
                                 <input
-                                    style={{ maxWidth: '2.7rem', border: '0px solid white', fontSize: '0.75rem', textAlign: 'left' }}
+                                    style={{ maxWidth: 'auto', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
                                     id="timeInput"
                                     value={repInput}
                                     placeholder="Reps"
@@ -245,10 +245,10 @@ const Tabata = () => {
                 {/* DYMANIC TEXT LINE*/}
 
                 {/* Show this text at initial state*/}
-                {status === STATUS.INITIAL && <SupportText>Please input time for a time for exercise and rest, plus repetitions above</SupportText>}
+                {/* {status === STATUS.INITIAL && <SupportText>Please input time for a time for exercise and rest, plus repetitions above</SupportText>} */}
 
                 {/* Show this text when timer in progress */}
-                {status !== STATUS.INITIAL && status !== STATUS.FASTFORWARDED && (secondsRemainingRest !== 0 || secondsRemainingWork !== 0) && (
+                {/* {status !== STATUS.INITIAL && status !== STATUS.FASTFORWARDED && (secondsRemainingRest !== 0 || secondsRemainingWork !== 0) && (
                     <SupportText>
                         In progress:
                         <DisplayForText totalSeconds={totalSecondsWork} timeSecInput={timeSecInputWork} />
@@ -256,10 +256,10 @@ const Tabata = () => {
                         <DisplayForText totalSeconds={totalSecondsRest} timeSecInput={timeSecInputRest} />
                         <div>rest, for {repInput} rounds</div>
                     </SupportText>
-                )}
+                )} */}
 
                 {/* Show this text when timer is finished or fastforwarded */}
-                {(status === STATUS.FASTFORWARDED || (secondsRemainingRest === 0 && secondsRemainingWork === 0 && repRemaining === 0 && status !== STATUS.INITIAL)) && (
+                {/* {(status === STATUS.FASTFORWARDED || (secondsRemainingRest === 0 && secondsRemainingWork === 0 && repRemaining === 0 && status !== STATUS.INITIAL)) && (
                     <SupportText>
                         Finished:
                         <DisplayForText totalSeconds={totalSecondsWork} timeSecInput={timeSecInputWork} />
@@ -267,11 +267,11 @@ const Tabata = () => {
                         <DisplayForText totalSeconds={totalSecondsRest} timeSecInput={timeSecInputRest} />
                         <div>rest, for {repInput} rounds</div>
                     </SupportText>
-                )}
+                )} */}
 
                 {/* DYMANIC BUTTONS*/}
 
-                <Buttons>
+                {/* <Buttons>
                     {status !== STATUS.FASTFORWARDED && (secondsRemainingRest !== 0 || secondsRemainingWork !== 0 || status === STATUS.INITIAL) && (
                         <Button onClick={startStopCountdown} isActive={status === STATUS.STARTED}>
                             {status === STATUS.STARTED ? 'Pause' : 'Start'}
@@ -295,7 +295,7 @@ const Tabata = () => {
                             Forward
                         </Button>
                     )}
-                </Buttons>
+                </Buttons> */}
             </TimerContainer>
         </div>
     );

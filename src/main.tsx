@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { NavLink, Outlet, RouterProvider, createHashRouter } from 'react-router-dom';
 
 import './index.css';
+import AddTimersView from './views/AddTimersView';
 import DocumentationView from './views/DocumentationView';
 import TimersView from './views/TimersView';
 
@@ -18,8 +19,12 @@ const PageIndex = () => {
                 </li>
                 <li>
                     <NavLink to="/docs" style={({ isActive }) => linkStyle(isActive)}>
-                        {' '}
                         Documentation
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/add" style={({ isActive }) => linkStyle(isActive)}>
+                        Add
                     </NavLink>
                 </li>
             </ul>
@@ -69,6 +74,10 @@ const router = createHashRouter([
             {
                 path: '/docs',
                 element: <DocumentationView />,
+            },
+            {
+                path: '/add',
+                element: <AddTimersView />,
             },
         ],
     },

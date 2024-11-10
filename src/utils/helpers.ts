@@ -6,16 +6,20 @@ function convertToSeconds(timeMinInput: number | string, timeSecInput: number | 
     return Number(timeMinInput || '0') * 60 + Number(timeSecInput || '0');
 }
 
-type DisplayForTextProps = {
-    totalSeconds: number | string;
-    timeSecInput: number | string;
-};
+function DisplayTimeForText({ totalSeconds }: { totalSeconds: number }) {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
 
-function DisplayForText({ totalSeconds, timeSecInput }: DisplayForTextProps) {
-    const minutes = Number(totalSeconds) > 60 ? `${String(Number(Number(totalSeconds) - (Number(timeSecInput) % 60)) / 60)} min ` : '';
-    const seconds = Number(timeSecInput) % 60 > 0 ? `${String(Number(timeSecInput) % 60) || '00'} sec` : '';
+    const minutesDisplay = minutes > 0 ? `${minutes} min ` : '';
+    const secondsDisplay = seconds > 0 ? `${seconds} sec` : minutes > 0 ? '' : '0 sec';
 
-    return ` ${minutes}${seconds}`;
+    return `${minutesDisplay}${secondsDisplay}`;
+}
+
+function DisplayRepsForText({ repInput }: { repInput: number }) {
+    const repDisplay = repInput > 1 ? `for ${repInput} reps ` : '';
+
+    return `${repDisplay}`;
 }
 
 type DisplayForTimeProps = {
@@ -55,4 +59,4 @@ function TimeOnTimer({ secondsRemaining }: TimeOnTimerProps): TimeOnTimerReturn 
     };
 }
 
-export { convertToSeconds, DisplayForText, DisplayForTime, TimeOnTimer };
+export { convertToSeconds, DisplayTimeForText, DisplayRepsForText, DisplayForTime, TimeOnTimer };

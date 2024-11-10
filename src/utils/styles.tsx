@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Timers = styled.div`
   display: flex;
@@ -13,26 +13,26 @@ const Timers = styled.div`
 `;
 
 const TimerTitle = styled.div`
-  font-size: 1em;
+  font-size: 0.75em;
   font-family: sans-serif;
   color: white;
   text-align: center;
   padding-top: 2rem;
   text-transform: uppercase;
-letter-spacing: .2rem;
+letter-spacing: .1rem;
 
 `;
 
 interface TimerContainerProps {
     isActive?: boolean;
-  }
+}
 
 const TimerContainer = styled.div<TimerContainerProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-content: space-between;
-  background-color: ${(props) => (props.isActive ? 'green' : 'grey')};  
+  background-color: ${props => (props.isActive ? 'green' : 'grey')};  
   border-radius: 10px;
   flex-basis: 100%;
   flex-grow: 1;
@@ -43,20 +43,19 @@ const Timer = styled.div`
   flex-direction: column;
   text-align: center;
   justify-content: center;
-  width: 300px;
-  height: 5rem;
-  padding: 60px;
-  margin: 30px;
+  width: 200px;
+  padding: 20px;
+  margin: 20px;
   margin-bottom: 15px;
-  font-size: 2rem;
-  align-content: space-between;
+  font-size: 1rem;
+
   background-color: white;
   border-radius: 10px;
 `;
 
 const TimeDisplay = styled.div<TimerContainerProps>`
   border: 2px solid white;
-  color: ${(props) => (props.isActive ? 'black' : 'grey')}; 
+  color: ${props => (props.isActive ? 'black' : 'grey')}; 
   display: flex;
     align-items: center;
   justify-content: center;
@@ -69,17 +68,17 @@ color: white;
 margin: 0.25em;
 border-radius: 10px;
 border: 2px solid;
-width: 70px;
-height: 50px;
-background-color: ${(props) => (props.isActive ? 'maroon' : 'green' )}; 
-`
+width: 60px;
+height: 30px;
+background-color: ${props => (props.isActive ? 'maroon' : 'green')}; 
+`;
 const Buttons = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-content: space-between;
   padding-bottom: 1rem;
-`
+`;
 
 const Input = styled.div`
     
@@ -87,7 +86,6 @@ const Input = styled.div`
 
 const Inputs = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: center;
 `;
 
@@ -99,7 +97,11 @@ const SupportText = styled.div`
   gap: 1.5px;
   justify-content: center;
 
-`
+`;
 
+const MainText = styled.div`
+  font-size: 1rem;
+  color: black;
+`;
 
-  export {Button, Buttons, Input, Inputs, TimeDisplay, TimerContainer, Timer, TimerTitle, SupportText, Timers};
+export { Button, Buttons, Input, Inputs, TimeDisplay, TimerContainer, Timer, TimerTitle, SupportText, Timers, MainText };
