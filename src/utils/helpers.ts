@@ -6,18 +6,25 @@ function convertToSeconds(timeMinInput: number | string, timeSecInput: number | 
     return Number(timeMinInput || '0') * 60 + Number(timeSecInput || '0');
 }
 
-function DisplayTimeForText({ totalSeconds }: { totalSeconds: number }) {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+function TotalSeconds(timeMinInput: number | string, timeSecInput: number | string, timeMinInputRest: number | string, timeSecInputRest: number | string, repInput: number | string) {
+    return ((Number(timeMinInput) || 0) * 60 + (Number(timeSecInput) || 0) + (Number(timeMinInputRest) || 0) * 60 + (Number(timeSecInputRest) || 0)) * (Number(repInput) || 1);
+}
 
-    const minutesDisplay = minutes > 0 ? `${minutes} min ` : '';
-    const secondsDisplay = seconds > 0 ? `${seconds} sec` : minutes > 0 ? '' : '0 sec';
+function DisplayTimeForText(timeMinInput: number | string, timeSecInput: number | string) {
+    const minutes = Number(timeMinInput) || 0;
+    const seconds = Number(timeSecInput) || 0;
 
-    return `${minutesDisplay}${secondsDisplay}`;
+    if (minutes > 0 && seconds === 0) {
+        return `${minutes} min`;
+    } else if (minutes > 0 && seconds > 0) {
+        return `${minutes} min ${seconds} sec`;
+    } else if (minutes === 0 && seconds > 0) {
+        return `${seconds} sec`;
+    }
 }
 
 function DisplayRepsForText({ repInput }: { repInput: number }) {
-    const repDisplay = repInput > 1 ? `for ${repInput} reps ` : '';
+    const repDisplay = repInput > 1 ? ` for ${repInput} reps ` : '';
 
     return `${repDisplay}`;
 }
@@ -59,4 +66,10 @@ function TimeOnTimer({ secondsRemaining }: TimeOnTimerProps): TimeOnTimerReturn 
     };
 }
 
-export { convertToSeconds, DisplayTimeForText, DisplayRepsForText, DisplayForTime, TimeOnTimer };
+function InputsValidation(totalSeconds: number | string) {
+    if (Number.isNaN(totalSeconds) || Number(totalSeconds) <= 0) {
+        return false;
+    }
+}
+
+export { convertToSeconds, DisplayTimeForText, DisplayRepsForText, DisplayForTime, TimeOnTimer, TotalSeconds, InputsValidation };

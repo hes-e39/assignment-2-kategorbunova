@@ -1,11 +1,15 @@
-import { SupportText, TimerContainer, Timers } from '../utils/styles';
-
+import { useContext } from 'react';
 import Countdown from '../components/timers/Countdown';
 import Stopwatch from '../components/timers/Stopwatch';
 import Tabata from '../components/timers/Tabata';
 import XY from '../components/timers/XY';
+import { SupportText } from '../utils/styles';
+import { TimerContainer, Timers } from '../utils/styles';
+import { TimersContext } from './TimerProvider';
 
 const TimersView = () => {
+    const { timersArray } = useContext(TimersContext);
+
     const timers = [
         { title: 'Stopwatch', C: <Stopwatch /> },
         { title: 'Countdown', C: <Countdown /> },
@@ -16,31 +20,18 @@ const TimersView = () => {
     return (
         <div>
             <Timers>
-                {timers.map(timer => (
-                    <div key={`timer-${timer.title}`}>
-                        <TimerContainer> {timer.C} </TimerContainer>
-                    </div>
-                ))}
+                {timersArray.map((timer, index) => {
+                    const matchedTimer = timers.find(t => t.title === timer.title);
+
+                    return (
+                        <div key={`timer-${timer.title}-${index}`}>
+                            {index + 1}. {timer.title}
+                            <TimerContainer>{matchedTimer?.C}</TimerContainer>
+                        </div>
+                    );
+                })}
             </Timers>
-
             <SupportText>Text</SupportText>
-            {/* <Buttons>
-                <Button onClick={startStopCountdown} isActive={status === STATUS.STARTED}>
-                    Pause/Start
-                </Button>
-
-                <Button onClick={resetCountdown} style={{ backgroundColor: 'navy' }}>
-                    Reset
-                </Button>
-
-                <Button onClick={initialCountdown} style={{ backgroundColor: 'steelblue' }}>
-                    New Input
-                </Button>
-
-                <Button onClick={fastforwardCountdown} style={{ backgroundColor: 'darkgreen' }}>
-                    Forward
-                </Button>
-            </Buttons> */}
         </div>
     );
 };

@@ -6,7 +6,7 @@ const Timers = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-content: space-between;
-  gap: 5rem;
+  gap: 2rem;
     flex-basis: 100%;
     margin: 3rem 10rem;
 
@@ -43,7 +43,7 @@ const Timer = styled.div`
   flex-direction: column;
   text-align: center;
   justify-content: center;
-  width: 200px;
+  width: 100px;
   padding: 20px;
   margin: 20px;
   margin-bottom: 15px;
@@ -81,12 +81,12 @@ const Buttons = styled.div`
 `;
 
 const Input = styled.div`
-    
 `;
 
 const Inputs = styled.div`
   display: flex;
   justify-content: center;
+  gap: 0.25rem;
 `;
 
 const SupportText = styled.div`

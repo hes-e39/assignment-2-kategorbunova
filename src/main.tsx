@@ -5,6 +5,7 @@ import { NavLink, Outlet, RouterProvider, createHashRouter } from 'react-router-
 import './index.css';
 import AddTimersView from './views/AddTimersView';
 import DocumentationView from './views/DocumentationView';
+import { TimersProvider } from './views/TimerProvider';
 import TimersView from './views/TimersView';
 
 const PageIndex = () => {
@@ -86,6 +87,8 @@ const router = createHashRouter([
 // biome-ignore lint/style/noNonNullAssertion: root html element is there
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <RouterProvider router={router} />
+        <TimersProvider>
+            <RouterProvider router={router} />
+        </TimersProvider>
     </StrictMode>,
 );

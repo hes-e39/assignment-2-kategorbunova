@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
-import { DisplayRepsForText, DisplayTimeForText } from '../utils/helpers';
-import { Button, Input, MainText, SupportText, Timers } from '../utils/styles';
-
+import { useContext } from 'react';
 import Countdown from '../components/timers/Countdown';
 import Stopwatch from '../components/timers/Stopwatch';
 import Tabata from '../components/timers/Tabata';
 import XY from '../components/timers/XY';
+import { DisplayRepsForText, DisplayTimeForText } from '../utils/helpers';
+import { Button, Input, Inputs, MainText, SupportText, Timers } from '../utils/styles';
+import { TimersContext } from './TimerProvider';
 
 const AddTimersView = () => {
-    const [timerInputs, setTimerInputs] = useState({
-        Stopwatch: { timeMinInput: '', timeSecInput: '' },
-        Countdown: { timeMinInput: '', timeSecInput: '' },
-        XY: { timeMinInput: '', timeSecInput: '', repInput: '' },
-        Tabata: { timeMinInputRest: '', timeSecInputRest: '', timeMinInputWork: '', timeSecInputWork: '', repInput: '' },
-    });
+    const { addTimer, timersArray, timerInputs, handleInputChange, removeLastTimer } = useContext(TimersContext);
 
     const timers = [
         { title: 'Stopwatch', C: <Stopwatch /> },
@@ -21,30 +16,6 @@ const AddTimersView = () => {
         { title: 'XY', C: <XY /> },
         { title: 'Tabata', C: <Tabata /> },
     ];
-
-    const handleInputChange = (title, field, value) => {
-        setTimerInputs(prevInputs => ({ ...prevInputs, [title]: { ...prevInputs[title], [field]: value } }));
-    };
-
-    //var timersArray = new Array();
-
-    //const timersArray = [];
-    const [timersArray, setTimersArray] = useState([]);
-
-    const addTimer = title => {
-        const { timeMinInput = '0', timeSecInput = '0', repInput = '1' } = timerInputs[title];
-        const totalSeconds = (Number.parseInt(timeMinInput, 10) || 0) * 60 + (Number.parseInt(timeSecInput, 10) || 0);
-
-        setTimersArray(prevArray => [...prevArray, { title, totalSeconds, repInput }]);
-    };
-
-    const removeLastTimer = () => {
-        setTimersArray(prevArray => prevArray.slice(0, -1));
-    };
-
-    useEffect(() => {
-        console.log(timersArray);
-    }, [timersArray]);
 
     return (
         <div style={{ textAlign: 'center', paddingTop: '4rem' }}>
@@ -54,65 +25,65 @@ const AddTimersView = () => {
                 {timers.map(timer => (
                     <div key={`timer-${timer.title}`}>
                         {timer.title}
-                        <Input>
-                            <input
-                                style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
-                                id="timeMinInput"
-                                placeholder="Min"
-                                value={timerInputs[timer.title].timeMinInput}
-                                onChange={e => {
-                                    handleInputChange(timer.title, 'timeMinInput', e.target.value);
-                                }}
-                            />
-                            :
-                            <input
-                                style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
-                                id="timeSecInput"
-                                value={timerInputs[timer.title].timeSecInput}
-                                placeholder="Sec"
-                                onChange={e => {
-                                    handleInputChange(timer.title, 'timeSecInput', e.target.value);
-                                }}
-                            />
-                        </Input>
-
-                        {(timer.title === 'XY' || timer.title === 'Tabata') && (
+                        <Inputs>
                             <Input>
                                 <input
-                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
-                                    id="repInput"
-                                    placeholder="Rep"
-                                    value={timerInputs[timer.title].repInput}
-                                    onChange={e => {
-                                        handleInputChange(timer.title, 'repInput', e.target.value);
-                                    }}
-                                />
-                            </Input>
-                        )}
-                        {timer.title === 'Tabata' && (
-                            <Input>
-                                <input
-                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
-                                    id="timeMinInputRest"
+                                    style={{ maxWidth: '3rem', fontSize: '1rem', textAlign: 'right' }}
+                                    id="timeMinInput"
                                     placeholder="Min"
-                                    value={timerInputs[timer.title].timeMinInputRest}
+                                    value={timerInputs[timer.title].timeMinInput}
                                     onChange={e => {
-                                        handleInputChange(timer.title, 'timeMinInputRest', e.target.value);
+                                        handleInputChange(timer.title, 'timeMinInput', e.target.value);
                                     }}
                                 />
                                 :
                                 <input
-                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
-                                    id="timeSecInputRest"
+                                    style={{ maxWidth: '3rem', fontSize: '1rem', textAlign: 'left' }}
+                                    id="timeSecInput"
+                                    value={timerInputs[timer.title].timeSecInput}
                                     placeholder="Sec"
-                                    value={timerInputs[timer.title].timeSecInputRest}
                                     onChange={e => {
-                                        handleInputChange(timer.title, 'timeSecInputRest', e.target.value);
+                                        handleInputChange(timer.title, 'timeSecInput', e.target.value);
                                     }}
                                 />
                             </Input>
-                        )}
-
+                            {(timer.title === 'XY' || timer.title === 'Tabata') && (
+                                <Input>
+                                    <input
+                                        style={{ maxWidth: '3rem', fontSize: '1rem', textAlign: 'right' }}
+                                        id="repInput"
+                                        placeholder="Rep"
+                                        value={timerInputs[timer.title].repInput}
+                                        onChange={e => {
+                                            handleInputChange(timer.title, 'repInput', e.target.value);
+                                        }}
+                                    />
+                                </Input>
+                            )}
+                            {timer.title === 'Tabata' && (
+                                <Input>
+                                    <input
+                                        style={{ maxWidth: '3rem', fontSize: '1rem', textAlign: 'right' }}
+                                        id="timeMinInputRest"
+                                        placeholder="Rest Min"
+                                        value={timerInputs[timer.title].timeMinInputRest}
+                                        onChange={e => {
+                                            handleInputChange(timer.title, 'timeMinInputRest', e.target.value);
+                                        }}
+                                    />
+                                    :
+                                    <input
+                                        style={{ maxWidth: '3rem', fontSize: '1rem', textAlign: 'left' }}
+                                        id="timeSecInputRest"
+                                        placeholder="Rest Sec"
+                                        value={timerInputs[timer.title].timeSecInputRest}
+                                        onChange={e => {
+                                            handleInputChange(timer.title, 'timeSecInputRest', e.target.value);
+                                        }}
+                                    />
+                                </Input>
+                            )}
+                        </Inputs>
                         <Button onClick={() => addTimer(timer.title)} style={{ backgroundColor: 'navy', width: '100px' }}>
                             Add
                         </Button>
@@ -123,13 +94,16 @@ const AddTimersView = () => {
             <ol style={{ textAlign: 'left', position: 'relative', left: '40%' }}>
                 {timersArray.map((timer, index) => (
                     <li key={index} style={{ listStylePosition: 'inside' }}>
-                        <DisplayTimeForText totalSeconds={timer.totalSeconds} /> <DisplayRepsForText repInput={timer.repInput} /> ({timer.title})
+                        {DisplayTimeForText(timer.timeMinInput, timer.timeSecInput)}
+                        <DisplayRepsForText repInput={timer.repInput} /> ({timer.title})
                     </li>
                 ))}
             </ol>
-            <Button onClick={() => removeLastTimer()} style={{ backgroundColor: 'maroon', width: '100px' }}>
-                Undo
-            </Button>
+            {timersArray.length !== 0 && (
+                <Button onClick={() => removeLastTimer()} style={{ backgroundColor: 'maroon', width: '100px' }}>
+                    Undo
+                </Button>
+            )}
         </div>
     );
 };
