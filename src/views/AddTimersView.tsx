@@ -8,7 +8,7 @@ import { Button, Input, Inputs, MainText, SupportText, Timers } from '../utils/s
 import { TimersContext } from './TimerProvider';
 
 const AddTimersView = () => {
-    const { addTimer, timersArray, timerInputs, handleInputChange, removeLastTimer } = useContext(TimersContext);
+    const { addTimer, timersArray, timerInputs, handleInputChange, removeLastTimer, totalQueueSeconds, totalSecondsPassed, statusQueue, currentTimerIndex } = useContext(TimersContext);
 
     const timers = [
         { title: 'Stopwatch', C: <Stopwatch /> },
@@ -19,6 +19,13 @@ const AddTimersView = () => {
 
     return (
         <div style={{ textAlign: 'center', paddingTop: '4rem' }}>
+            <p>
+                Total Queue Time: {Math.floor(totalQueueSeconds / 60)} min {totalQueueSeconds % 60} sec
+            </p>
+            <p>
+                Total Time Passed: {Math.floor(totalSecondsPassed / 60)} min {totalSecondsPassed % 60} sec
+            </p>
+            {statusQueue},{currentTimerIndex}
             Timers available for your custom workout
             <SupportText>enter the time and add to workout</SupportText>
             <Timers>
@@ -95,6 +102,7 @@ const AddTimersView = () => {
                 {timersArray.map((timer, index) => (
                     <li key={index} style={{ listStylePosition: 'inside' }}>
                         {DisplayTimeForText(timer.timeMinInput, timer.timeSecInput)}
+                        {(timer.timeSecInputRest !== '' || timer.timeMinInputRest !== '') && <> (Work) + {DisplayTimeForText(timer.timeMinInputRest, timer.timeSecInputRest)} (Rest)</>}
                         <DisplayRepsForText repInput={timer.repInput} /> ({timer.title})
                     </li>
                 ))}

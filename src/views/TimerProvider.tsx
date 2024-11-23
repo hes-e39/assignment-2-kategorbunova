@@ -1,4 +1,5 @@
 import { type ReactNode, createContext, useState } from 'react';
+import { STATUS } from '../utils/constants';
 import { TotalSeconds } from '../utils/helpers';
 import { InputsValidation } from '../utils/helpers';
 
@@ -7,6 +8,8 @@ export type Timer = {
     totalSeconds: number;
     timeMinInput: string;
     timeSecInput: string;
+    timeMinInputRest: string;
+    timeSecInputRest: string;
     repInput: string;
 };
 
@@ -16,6 +19,17 @@ export type TimersContextType = {
     addTimer: (title: string) => void;
     handleInputChange: (title: string, field: string, value: string) => void;
     removeLastTimer: () => void;
+    resetTimers: () => void;
+    resetAll: boolean;
+    // fastforward: boolean;
+    // fastforwardTimer: () => void;
+    totalSecondsPassed: number;
+    currentTimerIndex: number;
+    totalQueueSeconds: number;
+    statusQueue: StatusType;
+    setTotalSecondsPassed: (value: number) => void;
+    setCurrentTimerIndex: (index: number) => void;
+    setStatusQueue: (status: StatusType) => void;
 };
 
 const initialTimerInputs = {
@@ -31,12 +45,25 @@ export const TimersContext = createContext<TimersContextType>({
     addTimer: () => {},
     handleInputChange: () => {},
     removeLastTimer: () => {},
+    resetTimers: () => {},
+    resetAll: false,
+    // fastforward: false,
+    // fastforwardTimer: () => {},
+    totalSecondsPassed: 0,
+    currentTimerIndex: 0,
+    totalQueueSeconds: 0,
+    statusQueue: STATUS.INITIAL,
+    setTotalSecondsPassed: () => {},
+    setCurrentTimerIndex: () => {},
+    setStatusQueue: () => {},
 });
 
 export const TimersProvider = ({ children }: { children: ReactNode }) => {
     const [timersArray, setTimersArray] = useState<Timer[]>([]);
-
     const [timerInputs, setTimerInputs] = useState(initialTimerInputs);
+    const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
+    const [totalSecondsPassed, setTotalSecondsPassed] = useState(0);
+    const [statusQueue, setStatusQueue] = useState(STATUS.INITIAL);
 
     const handleInputChange = (title: string, field: string, value: string) => {
         setTimerInputs(prevInputs => ({ ...prevInputs, [title]: { ...prevInputs[title], [field]: value } }));
@@ -49,7 +76,7 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
         if (InputsValidation(totalSeconds) === false) {
             alert('Please enter a valid time.');
         } else {
-            setTimersArray(prevArray => [...prevArray, { title, totalSeconds, repInput, timeMinInput, timeSecInput }]);
+            setTimersArray(prevArray => [...prevArray, { title, totalSeconds, repInput, timeMinInput, timeSecInput, timeMinInputRest, timeSecInputRest }]);
         }
     };
 
@@ -57,7 +84,43 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
         setTimersArray(prevArray => prevArray.slice(0, -1));
     };
 
-    return <TimersContext.Provider value={{ timersArray, addTimer, timerInputs, handleInputChange, removeLastTimer }}>{children}</TimersContext.Provider>;
+    const [resetAll, setResetAll] = useState(false);
+
+    const resetTimers = () => {
+        setResetAll(true);
+        setTimeout(() => setResetAll(false), 0);
+    };
+
+    const totalQueueSeconds = timersArray.reduce((total, timer) => {
+        const totalSeconds =
+            ((Number(timer.timeMinInput) || 0) * 60 + (Number(timer.timeSecInput) || 0) + (Number(timer.timeMinInputRest) || 0) * 60 + (Number(timer.timeSecInputRest) || 0)) *
+            (Number(timer.repInput) || 1);
+
+        return total + totalSeconds;
+    }, 0);
+
+    return (
+        <TimersContext.Provider
+            value={{
+                timersArray,
+                addTimer,
+                timerInputs,
+                handleInputChange,
+                removeLastTimer,
+                resetTimers,
+                resetAll,
+                totalSecondsPassed,
+                totalQueueSeconds,
+                currentTimerIndex,
+                statusQueue,
+                setTotalSecondsPassed,
+                setCurrentTimerIndex,
+                setStatusQueue,
+            }}
+        >
+            {children}
+        </TimersContext.Provider>
+    );
 };
 
 export default TimersProvider;

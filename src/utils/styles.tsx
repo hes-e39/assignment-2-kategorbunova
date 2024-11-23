@@ -43,12 +43,11 @@ const Timer = styled.div`
   flex-direction: column;
   text-align: center;
   justify-content: center;
-  width: 100px;
+  width: 200px;
   padding: 20px;
   margin: 20px;
   margin-bottom: 15px;
   font-size: 1rem;
-
   background-color: white;
   border-radius: 10px;
 `;

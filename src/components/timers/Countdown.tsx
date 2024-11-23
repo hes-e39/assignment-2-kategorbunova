@@ -1,180 +1,119 @@
-import { useEffect, useRef, useState } from 'react';
-import { STATUS } from '../../utils/constants';
-import type { StatusType } from '../../utils/constants';
-import { DisplayForTime, convertToSeconds } from '../../utils/helpers';
-import { Input, Inputs, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
+//import { useContext } from 'react';
+import { useCountdownTimer } from '../../hooks/useCountdownTimer';
+import { DisplayRepsForText } from '../../utils/helpers';
+import { TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
+import { Button, Buttons } from '../../utils/styles';
+//import { TimersContext } from '../../views/TimerProvider';
 
-const Countdown = () => {
-    const [timeMinInput, setTimeMinInput] = useState('');
-    const [timeSecInput, setTimeSecInput] = useState('');
+const Countdown = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, onFinish }) => {
+    const { secondsPassed, fastforward } = useCountdownTimer(totalSeconds, isActive, onFinish, repInput);
 
-    const [status, setStatus] = useState<StatusType>(STATUS.INITIAL);
-    const [secondsRemaining, setSecondsRemaining] = useState(0);
+    // const { timersArray } = useContext(TimersContext);
+    //const { resetAll } = useContext(TimersContext);
+    //const { fastforwardTimer } = useContext(TimersContext); // Access fastforward from context
 
-    const secondsOnTimer = secondsRemaining % 60;
-    const minutesRemaining = (secondsRemaining - secondsOnTimer) / 60;
-    const minutesOnTimer = minutesRemaining % 60;
-    const hoursOnTimer = (minutesRemaining - minutesOnTimer) / 60;
+    //const [status, setStatus] = useState<StatusType>(STATUS.INITIAL);
 
-    const totalSeconds = convertToSeconds(timeMinInput, timeSecInput);
+    // const [secondsPassed, setSecondsPassed] = useState(() => {
+    //     const elapsedForCurrentTimer = totalSecondsPassed - timersArray.slice(0, currentTimerIndex).reduce((total, timer) => total + timer.totalSeconds, 0);
+    //     return Math.max(0, elapsedForCurrentTimer); // Ensure no negative value
+    // });
 
-    const startStopCountdown = () => {
-        if (Number.isNaN(totalSeconds) || (timeMinInput === '' && timeSecInput === '') || totalSeconds <= 0) {
-            alert('Please enter a valid time.');
-        } else if (totalSeconds > 3600) {
-            alert('Friendly caution: excercise over an hour can lead to overtraining. Please enter a time under an hour.');
-        } else {
-            if (status !== STATUS.STARTED) {
-                if (secondsRemaining === 0) {
-                    setSecondsRemaining(totalSeconds);
-                }
-                setStatus(STATUS.STARTED);
-            } else {
-                setStatus(STATUS.STOPPED);
-            }
-        }
-    };
+    // const [secondsRemaining, setSecondsRemaining] = useState(totalSeconds);
+    // useEffect(() => {
+    //     if (resetAll) {
+    //         setSecondsPassed(0); // Reset the passed time
+    //     }
+    // }, [resetAll]);
 
-    const resetCountdown = () => {
-        setStatus(STATUS.STOPPED);
-        const totalSeconds = convertToSeconds(timeMinInput, timeSecInput);
-        setSecondsRemaining(totalSeconds);
-    };
+    // useEffect(() => {
+    //     const elapsedForCurrentTimer = totalSecondsPassed - timersArray.slice(0, currentTimerIndex).reduce((total, timer) => total + timer.totalSeconds, 0);
+    //     setSecondsPassed(Math.max(0, elapsedForCurrentTimer)); // Ensure no negative value
+    // }, [totalSecondsPassed, currentTimerIndex, timersArray]);
 
-    const fastforwardCountdown = () => {
-        setStatus(STATUS.FASTFORWARDED);
-        setSecondsRemaining(0);
-        if (intervalRef.current !== null) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-    };
+    // const fastforwardCountdown = () => {
+    //     setStatus(STATUS.FASTFORWARDED);
+    //     setSecondsPassed(totalSeconds); // Fast forward the time to end
+    //     if (intervalRef.current !== null) {
+    //         clearInterval(intervalRef.current);
+    //         intervalRef.current = null;
+    //     }
+    // };
 
-    const initialCountdown = () => {
-        setStatus(STATUS.INITIAL);
-    };
+    // const intervalRef = useRef<number | null>();
 
-    const intervalRef = useRef<number | null>();
+    // useEffect(() => {
+    //     if (isActive) {
+    //         intervalRef.current = setInterval(() => {
+    //             setSecondsPassed(prev => {
+    //                 if (prev < totalSeconds - 1) return prev + 1;
+    //                 else {
+    //                     clearInterval(intervalRef.current);
+    //                     intervalRef.current = null;
+    //                     onFinish(totalSeconds);
+    //                     return 0;
+    //                 }
+    //             });
+    //         }, 1000);
+    //     } else {
+    //         if (intervalRef.current !== null) {
+    //             clearInterval(intervalRef.current);
+    //         }
+    //     }
 
-    useEffect(() => {
-        if (status === STATUS.STARTED) {
-            //this decrements the seconds immideately without waiting for the first second
-            setSecondsRemaining(prev => {
-                if (prev > 1) return prev - 1;
-                return prev; //this is added to fix a TypeScript error to ensure we never return undefined
-            });
+    //     return () => {
+    //         if (intervalRef.current !== null) {
+    //             clearInterval(intervalRef.current);
+    //             intervalRef.current = null;
+    //         }
+    //     };
+    // }, [status, isActive, onFinish]);
 
-            intervalRef.current = setInterval(() => {
-                setSecondsRemaining(prev => {
-                    if (prev > 1) return prev - 1;
-                    else {
-                        setStatus(STATUS.STOPPED);
-                        return 0;
-                    }
-                });
-            }, 1000);
-        }
-        return () => {
-            if (intervalRef.current !== null) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
-        };
-    }, [status]);
+    // useEffect(() => {
+    //     if (isActive) {
+    //         intervalRef.current = setInterval(() => {
+    //             setSecondsPassed(prev => {
+    //                 if (prev < totalSeconds - 1) {
+    //                     const newSecondsPassed = prev + 1;
+    //                     //setTotalSecondsPassed(prevTotal => prevTotal + 1); // Increment global totalSecondsPassed
+    //                     return newSecondsPassed;
+    //                 } else {
+    //                     clearInterval(intervalRef.current);
+    //                     intervalRef.current = null;
+    //                     onFinish(totalSeconds); // Call onFinish when countdown completes
+    //                     return totalSeconds; // Stop at totalSeconds
+    //                 }
+    //             });
+    //         }, 1000);
+    //     } else {
+    //         if (intervalRef.current !== null) {
+    //             clearInterval(intervalRef.current);
+    //         }
+    //     }
+
+    //     return () => {
+    //         if (intervalRef.current !== null) {
+    //             clearInterval(intervalRef.current);
+    //             intervalRef.current = null;
+    //         }
+    //     };
+    // }, [isActive, totalSeconds, onFinish, setTotalSecondsPassed]);
 
     return (
         <div className="App">
-            <TimerContainer isActive={status === STATUS.STARTED}>
+            <TimerContainer isActive={isActive}>
                 <TimerTitle>Countdown</TimerTitle>
-
-                {/* INPUTS FOR INITIAL STATE*/}
                 <Timer>
-                    {status === STATUS.INITIAL && (
-                        <Inputs>
-                            <Input>
-                                <input
-                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'right' }}
-                                    id="timeMinInput"
-                                    placeholder="10"
-                                    value={timeMinInput}
-                                    onChange={e => {
-                                        setTimeMinInput(e.target.value);
-                                    }}
-                                    disabled={secondsRemaining > 0}
-                                />
-                            </Input>
-                            <Input>
-                                :
-                                <input
-                                    style={{ maxWidth: '2rem', border: '0px solid white', fontSize: '1rem', textAlign: 'left' }}
-                                    id="timeInput"
-                                    value={timeSecInput}
-                                    placeholder="00"
-                                    onChange={e => {
-                                        setTimeSecInput(e.target.value);
-                                    }}
-                                    disabled={secondsRemaining > 0}
-                                />
-                            </Input>
-                        </Inputs>
-                    )}
-
-                    {/* TIME DISPLAY*/}
-                    {status !== STATUS.INITIAL && (
-                        <TimeDisplay isActive={status === STATUS.STARTED}>
-                            <DisplayForTime hoursOnTimer={hoursOnTimer} minutesOnTimer={minutesOnTimer} secondsOnTimer={secondsOnTimer} />
-                        </TimeDisplay>
-                    )}
+                    <DisplayRepsForText repInput={repInput} />
+                    <TimeDisplay>
+                        {Math.floor((totalSeconds - secondsPassed) / 60)}:{(totalSeconds - secondsPassed) % 60}
+                    </TimeDisplay>
                 </Timer>
-
-                {/* DYMANIC TEXT LINE */}
-
-                {/* Show this text at initial state*/}
-                {/* {status === STATUS.INITIAL && <SupportText>Please input time for a countdown above</SupportText>} */}
-
-                {/* Show this text when timer in progress
-                {status !== STATUS.INITIAL && status !== STATUS.FASTFORWARDED && secondsRemaining !== 0 && (
-                    <SupportText>
-                        In progress: countdown for
-                        <DisplayForText totalSeconds={totalSeconds} timeSecInput={timeSecInput} />
-                    </SupportText>
-                )}
-
-                Show this text when timer is finished or fastforwarded
-                {(status === STATUS.FASTFORWARDED || (secondsRemaining === 0 && status !== STATUS.INITIAL)) && (
-                    <SupportText>
-                        Finished: countdown for
-                        <DisplayForText totalSeconds={totalSeconds} timeSecInput={timeSecInput} />
-                    </SupportText>
-                )} */}
-
-                {/* DYMANIC BUTTONS */}
-
-                {/* <Buttons>
-                    {status !== STATUS.FASTFORWARDED && (secondsRemaining !== 0 || status === STATUS.INITIAL) && (
-                        <Button onClick={startStopCountdown} isActive={status === STATUS.STARTED}>
-                            {status === STATUS.STARTED ? 'Pause' : 'Start'}
-                        </Button>
-                    )}
-
-                    {status !== STATUS.INITIAL && secondsRemaining !== totalSeconds && (
-                        <Button onClick={resetCountdown} style={{ backgroundColor: 'navy' }}>
-                            Reset
-                        </Button>
-                    )}
-
-                    {(status === STATUS.FASTFORWARDED || (secondsRemaining === 0 && status !== STATUS.INITIAL)) && (
-                        <Button onClick={initialCountdown} style={{ backgroundColor: 'steelblue' }}>
-                            New Input
-                        </Button>
-                    )}
-
-                    {status !== STATUS.INITIAL && status !== STATUS.FASTFORWARDED && secondsRemaining !== 0 && (
-                        <Button onClick={fastforwardCountdown} style={{ backgroundColor: 'darkgreen' }}>
-                            Forward
-                        </Button>
-                    )}
-                </Buttons> */}
+                <Buttons>
+                    <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
+                        Forward
+                    </Button>
+                </Buttons>
             </TimerContainer>
         </div>
     );

@@ -20,7 +20,7 @@ function DisplayTimeForText(timeMinInput: number | string, timeSecInput: number 
         return `${minutes} min ${seconds} sec`;
     } else if (minutes === 0 && seconds > 0) {
         return `${seconds} sec`;
-    }
+    } else '';
 }
 
 function DisplayRepsForText({ repInput }: { repInput: number }) {
@@ -30,17 +30,17 @@ function DisplayRepsForText({ repInput }: { repInput: number }) {
 }
 
 type DisplayForTimeProps = {
-    hoursOnTimer: number;
+    //hoursOnTimer: number;
     minutesOnTimer: number;
     secondsOnTimer: number;
 };
 
-function DisplayForTime({ hoursOnTimer, minutesOnTimer, secondsOnTimer }: DisplayForTimeProps): string {
-    const hours = hoursOnTimer > 0 ? `${String(hoursOnTimer).padStart(2, '0')}:` : '';
+function DisplayForTime({ minutesOnTimer, secondsOnTimer }: DisplayForTimeProps): string {
+    //const hours = hoursOnTimer > 0 ? `${String(hoursOnTimer).padStart(2, '0')}:` : '';
     const minutes = `${String(minutesOnTimer).padStart(2, '0')}:`;
     const seconds = `${String(secondsOnTimer).padStart(2, '0')}`;
 
-    return `${hours}${minutes}${seconds}`;
+    return `${minutes}${seconds}`;
 }
 
 type TimeOnTimerProps = {
@@ -48,7 +48,7 @@ type TimeOnTimerProps = {
 };
 
 type TimeOnTimerReturn = {
-    hoursOnTimer: number;
+    //hoursOnTimer: number;
     minutesOnTimer: number;
     secondsOnTimer: number;
 };
@@ -57,10 +57,10 @@ function TimeOnTimer({ secondsRemaining }: TimeOnTimerProps): TimeOnTimerReturn 
     const secondsOnTimer = secondsRemaining % 60;
     const minutesRemaining = (secondsRemaining - secondsOnTimer) / 60;
     const minutesOnTimer = minutesRemaining % 60;
-    const hoursOnTimer = (minutesRemaining - minutesOnTimer) / 60;
+    //const hoursOnTimer = (minutesRemaining - minutesOnTimer) / 60;
 
     return {
-        hoursOnTimer,
+        //hoursOnTimer,
         minutesOnTimer,
         secondsOnTimer,
     };
