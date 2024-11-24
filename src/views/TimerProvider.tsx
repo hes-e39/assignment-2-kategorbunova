@@ -1,5 +1,6 @@
 import { type ReactNode, createContext, useState } from 'react';
 import { STATUS } from '../utils/constants';
+import type { StatusType } from '../utils/constants';
 import { TotalSeconds } from '../utils/helpers';
 import { InputsValidation } from '../utils/helpers';
 
@@ -21,7 +22,6 @@ export type TimersContextType = {
     removeLastTimer: () => void;
     resetTimers: () => void;
     resetAll: boolean;
-    // fastforward: boolean;
     removeAllTimers: () => void;
     totalSecondsPassed: number;
     currentTimerIndex: number;
@@ -61,7 +61,7 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
     const [timersArray, setTimersArray] = useState<Timer[]>([]);
     const [timerInputs, setTimerInputs] = useState(initialTimerInputs);
     const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
-    const [totalSecondsPassed, setTotalSecondsPassed] = useState(0);
+    const [totalSecondsPassed, setTotalSecondsPassed] = useState<number>(0);
     const [statusQueue, setStatusQueue] = useState(STATUS.INITIAL);
 
     const handleInputChange = (title: string, field: string, value: string) => {

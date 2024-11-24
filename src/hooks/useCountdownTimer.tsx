@@ -4,16 +4,14 @@ import { TimersContext } from '../views/TimerProvider';
 export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFinish: () => void, totalReps: number, totalSecondsRest: number) => {
     const { resetAll, setTotalSecondsPassed } = useContext(TimersContext);
 
-    const [secondsPassed, setSecondsPassed] = useState(0);
-    const [repsRemaining, setRepsRemaining] = useState(totalReps);
+    const [secondsPassed, setSecondsPassed] = useState<number>(0);
+    const [repsRemaining, setRepsRemaining] = useState<number>(totalReps);
 
     const oneRoundSecondsRest = totalSecondsRest / totalReps;
     const oneRoundSecondsWork = totalSeconds / totalReps - oneRoundSecondsRest;
     const oneRoundSeconds = oneRoundSecondsRest + oneRoundSecondsWork;
-    const [oneRoundSecondsLeft, setOneRoundSecondsLeft] = useState(oneRoundSeconds);
+    const [oneRoundSecondsLeft, setOneRoundSecondsLeft] = useState<number>(oneRoundSeconds);
     const [isWorkPhase, setIsWorkPhase] = useState(true);
-
-    const intervalRef = useRef<number | null>(null);
 
     const fastforward = () => {
         if (intervalRef.current !== null) {
@@ -23,13 +21,15 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
         const remainingTime = totalSeconds - secondsPassed;
         setSecondsPassed(totalSeconds);
         setRepsRemaining(0);
-        setTotalSecondsPassed(prevTotal => prevTotal + remainingTime);
+        setTotalSecondsPassed((prevTotal: number) => (prevTotal + remainingTime);
         onFinish();
     };
 
+    const intervalRef: React.MutableRefObject<number | null> = useRef(null);
+
     useEffect(() => {
         if (resetAll) {
-            setSecondsPassed(0); // Reset the passed time
+            setSecondsPassed(0);
             setOneRoundSecondsLeft(oneRoundSeconds);
             setRepsRemaining(totalReps);
         }
@@ -46,13 +46,13 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
                         const newSecondsPassed = prev + 1;
                         return newSecondsPassed;
                     } else {
-                        clearInterval(intervalRef.current);
+                        clearInterval(intervalRef.current!);
                         intervalRef.current = null;
                         onFinish();
                         return totalSeconds;
                     }
                 });
-                setTotalSecondsPassed(prevTotal => prevTotal + 1);
+                setTotalSecondsPassed((prevTotal: number) => prevTotal + 1);
             }, 1000);
         } else {
             if (intervalRef.current !== null) {
@@ -69,6 +69,7 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
         };
     }, [isActive, totalSeconds, onFinish, setTotalSecondsPassed]);
 
+    //updating reps
     useEffect(() => {
         if (isActive && repsRemaining >= 0 && secondsPassed % oneRoundSeconds === 0) {
             const remainingReps = Math.ceil((totalSeconds - secondsPassed) / oneRoundSeconds);
@@ -76,6 +77,7 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
         }
     }, [repsRemaining, isActive, oneRoundSeconds, secondsPassed, totalSeconds]);
 
+    //logic for displaying time across all four timers
     useEffect(() => {
         let updatedOneRoundSecondsLeft: number;
 
@@ -94,6 +96,7 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
         setOneRoundSecondsLeft(updatedOneRoundSecondsLeft);
     }, [secondsPassed, oneRoundSeconds, oneRoundSecondsWork, oneRoundSecondsRest, totalSeconds]);
 
+    //setting work or rest phase for styling
     useEffect(() => {
         if (secondsPassed % oneRoundSeconds < oneRoundSecondsWork) {
             setIsWorkPhase(true);

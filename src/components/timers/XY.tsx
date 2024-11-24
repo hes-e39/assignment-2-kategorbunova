@@ -1,17 +1,18 @@
 import { useContext, useEffect } from 'react';
 import { useCountdownTimer } from '../../hooks/useCountdownTimer';
+import type { TimerProps } from '../../utils/TimerProps';
 import { convertToSeconds } from '../../utils/helpers';
 import { Button, Buttons, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 import { TimersContext } from '../../views/TimerProvider';
 
 const XY: React.FC<TimerProps> = ({ repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, isCurrent, onFinish }) => {
-    const totalSecondsRest = convertToSeconds(timeMinInputRest, timeSecInputRest) * repInput;
+    const totalSecondsRest = convertToSeconds(timeMinInputRest || 0, timeSecInputRest || 0) * Number(repInput);
 
     const { secondsPassed, setSecondsPassed, fastforward, repsRemaining, setRepsRemaining, oneRoundSeconds, oneRoundSecondsLeft } = useCountdownTimer(
         totalSeconds,
         isActive,
         onFinish,
-        repInput,
+        Number(repInput),
         totalSecondsRest,
     );
     const { totalSecondsPassed, currentTimerIndex, timersArray } = useContext(TimersContext);

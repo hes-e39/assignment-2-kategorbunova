@@ -13,7 +13,7 @@ const Container = styled.div`
 `;
 
 /**
- * You can document your components by using the DocumentComponent component
+A1 Version – not updated for A2
  */
 const Documentation = () => {
     return (

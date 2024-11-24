@@ -1,13 +1,14 @@
 import { useContext, useEffect } from 'react';
 import type React from 'react';
 import { useCountdownTimer } from '../../hooks/useCountdownTimer';
+import type { TimerProps } from '../../utils/TimerProps';
 import { DisplayRepsForText } from '../../utils/helpers';
 import { TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 import { Button, Buttons } from '../../utils/styles';
 import { TimersContext } from '../../views/TimerProvider';
 
 const Countdown: React.FC<TimerProps> = ({ repInput, totalSeconds, isActive, isCurrent, onFinish }) => {
-    const { secondsPassed, setSecondsPassed, fastforward } = useCountdownTimer(totalSeconds, isActive, onFinish, repInput);
+    const { secondsPassed, setSecondsPassed, fastforward } = useCountdownTimer(totalSeconds, isActive, onFinish, Number(repInput), 0);
 
     const { totalSecondsPassed, currentTimerIndex, timersArray } = useContext(TimersContext);
 
@@ -28,7 +29,7 @@ const Countdown: React.FC<TimerProps> = ({ repInput, totalSeconds, isActive, isC
             <TimerContainer isActive={isActive}>
                 <TimerTitle>Countdown</TimerTitle>
                 <Timer>
-                    <DisplayRepsForText repInput={repInput} />
+                    <DisplayRepsForText repInput={Number(repInput)} />
                     <TimeDisplay>
                         {Math.floor(remainingTime / 60)}:{remainingTime % 60}
                     </TimeDisplay>

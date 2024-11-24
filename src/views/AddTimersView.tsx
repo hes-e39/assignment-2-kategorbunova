@@ -8,8 +8,7 @@ import { Button, Buttons, Input, Inputs, MainText, SupportText, Timers } from '.
 import { TimersContext } from './TimerProvider';
 
 const AddTimersView = () => {
-    const { addTimer, timersArray, timerInputs, handleInputChange, removeLastTimer, removeAllTimers, totalQueueSeconds, totalSecondsPassed, statusQueue, currentTimerIndex } =
-        useContext(TimersContext);
+    const { addTimer, timersArray, timerInputs, handleInputChange, removeLastTimer, removeAllTimers, totalQueueSeconds, totalSecondsPassed, currentTimerIndex } = useContext(TimersContext);
 
     const timers = [
         { title: 'Stopwatch', C: Stopwatch },
@@ -31,7 +30,7 @@ const AddTimersView = () => {
                                     style={{ maxWidth: '4rem', fontSize: '0.75rem', textAlign: 'right' }}
                                     id="timeMinInput"
                                     placeholder="Min"
-                                    value={timerInputs[timer.title].timeMinInput}
+                                    value={timerInputs[timer.title]?.timeMinInput || ''}
                                     onChange={e => {
                                         handleInputChange(timer.title, 'timeMinInput', e.target.value);
                                     }}
@@ -40,7 +39,7 @@ const AddTimersView = () => {
                                 <input
                                     style={{ maxWidth: '4rem', fontSize: '0.75rem', textAlign: 'left' }}
                                     id="timeSecInput"
-                                    value={timerInputs[timer.title].timeSecInput}
+                                    value={timerInputs[timer.title]?.timeSecInput || ''}
                                     placeholder="Sec"
                                     onChange={e => {
                                         handleInputChange(timer.title, 'timeSecInput', e.target.value);
@@ -103,7 +102,7 @@ const AddTimersView = () => {
                             {(Number(timer.timeSecInputRest) !== 0 || Number(timer.timeMinInputRest) !== 0) && (
                                 <> (Work) + {DisplayTimeForText(timer.timeMinInputRest, timer.timeSecInputRest)} (Rest)</>
                             )}
-                            <DisplayRepsForText repInput={timer.repInput} /> ({timer.title}){isStarted && totalSecondsPassed > 0 && ' (started)'}
+                            <DisplayRepsForText repInput={Number(timer.repInput)} /> ({timer.title}){isStarted && totalSecondsPassed > 0 && ' (started)'}
                         </li>
                     );
                 })}
