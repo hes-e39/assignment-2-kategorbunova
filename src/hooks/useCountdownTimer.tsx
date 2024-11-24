@@ -21,7 +21,7 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
         const remainingTime = totalSeconds - secondsPassed;
         setSecondsPassed(totalSeconds);
         setRepsRemaining(0);
-        setTotalSecondsPassed((prevTotal: number) => (prevTotal + remainingTime);
+        setTotalSecondsPassed((prevTotal: number) => prevTotal + remainingTime);
         onFinish();
     };
 
