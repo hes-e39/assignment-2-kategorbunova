@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Make sure to import Link
 import Countdown from '../components/timers/Countdown';
 import Stopwatch from '../components/timers/Stopwatch';
@@ -9,11 +10,24 @@ import { Button, Buttons } from '../utils/styles';
 import { Timers } from '../utils/styles';
 import { TimersContext } from './TimerProvider';
 
-const TimersView = () => {
-    const { timersArray, resetTimers, resetAll, totalQueueSeconds, totalSecondsPassed, setTotalSecondsPassed, currentTimerIndex, setCurrentTimerIndex, statusQueue, setStatusQueue } =
-        useContext(TimersContext);
+interface TimerProps {
+    timeMinInput?: string;
+    timeSecInput?: string;
+    repInput: string;
+    timeMinInputRest?: string;
+    timeSecInputRest?: string;
+    totalSeconds: number;
+    isActive: boolean;
+    isCurrent: boolean;
+    onFinish: () => void;
+}
 
-    const timers = [
+const TimersView = () => {
+    const { timersArray, resetTimers, totalQueueSeconds, totalSecondsPassed, setTotalSecondsPassed, currentTimerIndex, setCurrentTimerIndex, statusQueue, setStatusQueue } = useContext(TimersContext);
+
+    type TimerComponent = React.FC<TimerProps>;
+
+    const timers: { title: string; C: TimerComponent }[] = [
         { title: 'Stopwatch', C: Stopwatch },
         { title: 'Countdown', C: Countdown },
         { title: 'XY', C: XY },
@@ -26,15 +40,15 @@ const TimersView = () => {
         // setTotalSecondsPassed(newObject);
 
         const newIndex = currentTimerIndex;
-        const newObject2 = newIndex + 1;
-        setCurrentTimerIndex(newObject2);
+        const newIndexUpdated = newIndex + 1;
+        setCurrentTimerIndex(newIndexUpdated);
     };
 
     const startStopQueue = () => {
         if (statusQueue !== STATUS.STARTED) {
-            setStatusQueue(STATUS.STARTED); // Start the queue
+            setStatusQueue(STATUS.STARTED);
         } else {
-            setStatusQueue(STATUS.STOPPED); // Stop the queue
+            setStatusQueue(STATUS.STOPPED);
         }
     };
 
@@ -45,14 +59,16 @@ const TimersView = () => {
         setStatusQueue(STATUS.INITIAL);
     };
 
+    useEffect(() => {
+        if (totalSecondsPassed === totalQueueSeconds) {
+            setStatusQueue(STATUS.STOPPED);
+        }
+    }, [totalSecondsPassed, totalQueueSeconds, setStatusQueue]);
+
     return (
         <div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <progress
-                    value={totalSecondsPassed / totalQueueSeconds}
-                    max="1"
-                    style={{ width: '80%', height: '1rem' }} // Customize the width and height of the progress bar
-                />
+                <progress value={totalSecondsPassed / totalQueueSeconds} max="1" style={{ width: '80%', height: '1rem' }} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
                     <p style={{ margin: 0 }}>
                         Total Time Passed: {Math.floor(totalSecondsPassed / 60)} min {totalSecondsPassed % 60} sec
@@ -64,9 +80,11 @@ const TimersView = () => {
             </div>
             {timersArray.length > 0 && (
                 <Buttons>
-                    <Button onClick={startStopQueue} style={{ backgroundColor: statusQueue === STATUS.STARTED ? 'maroon' : 'green' }}>
-                        {statusQueue === STATUS.STARTED ? 'Pause Queue' : 'Start Queue'}
-                    </Button>
+                    {totalSecondsPassed !== totalQueueSeconds && (
+                        <Button onClick={startStopQueue} style={{ backgroundColor: statusQueue === STATUS.STARTED ? 'maroon' : 'green' }}>
+                            {statusQueue === STATUS.STARTED ? 'Pause Queue' : 'Start Queue'}
+                        </Button>
+                    )}
 
                     {statusQueue !== STATUS.INITIAL && (
                         <Button onClick={resetQueue} style={{ backgroundColor: 'navy' }}>
@@ -89,6 +107,10 @@ const TimersView = () => {
             <Timers>
                 {timersArray.map((timer, index) => {
                     const matchedTimer = timers.find(t => t.title === timer.title);
+
+                    if (!matchedTimer) {
+                        return null;
+                    }
 
                     const Timer = matchedTimer.C;
 

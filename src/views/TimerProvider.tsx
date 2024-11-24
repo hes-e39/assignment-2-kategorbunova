@@ -95,6 +95,7 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
     const removeAllTimers = () => {
         setTimersArray([]);
         setTotalSecondsPassed(0);
+        setCurrentTimerIndex(0);
     };
 
     const [resetAll, setResetAll] = useState(false);

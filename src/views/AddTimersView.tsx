@@ -12,10 +12,10 @@ const AddTimersView = () => {
         useContext(TimersContext);
 
     const timers = [
-        { title: 'Stopwatch', C: <Stopwatch /> },
-        { title: 'Countdown', C: <Countdown /> },
-        { title: 'XY', C: <XY /> },
-        { title: 'Tabata', C: <Tabata /> },
+        { title: 'Stopwatch', C: Stopwatch },
+        { title: 'Countdown', C: Countdown },
+        { title: 'XY', C: XY },
+        { title: 'Tabata', C: Tabata },
     ];
 
     return (
@@ -111,10 +111,10 @@ const AddTimersView = () => {
             {timersArray.length !== 0 && (
                 <Buttons>
                     <Button onClick={() => removeLastTimer()} style={{ backgroundColor: 'maroon', width: '100px' }}>
-                        Undo
+                        Remove Last
                     </Button>
                     <Button onClick={() => removeAllTimers()} style={{ backgroundColor: 'maroon', width: '100px' }}>
-                        Remove all
+                        Remove All
                     </Button>
                 </Buttons>
             )}

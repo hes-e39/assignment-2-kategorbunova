@@ -7,8 +7,6 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
     const [secondsPassed, setSecondsPassed] = useState(0);
     const [repsRemaining, setRepsRemaining] = useState(totalReps);
 
-    //const oneRoundSeconds = totalSeconds / totalReps;
-
     const oneRoundSecondsRest = totalSecondsRest / totalReps;
     const oneRoundSecondsWork = totalSeconds / totalReps - oneRoundSecondsRest;
     const oneRoundSeconds = oneRoundSecondsRest + oneRoundSecondsWork;
@@ -40,7 +38,7 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
     useEffect(() => {
         if (isActive) {
             if (intervalRef.current !== null) {
-                clearInterval(intervalRef.current); // Ensure no overlapping intervals
+                clearInterval(intervalRef.current);
             }
             intervalRef.current = setInterval(() => {
                 setSecondsPassed(prev => {
@@ -50,8 +48,8 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
                     } else {
                         clearInterval(intervalRef.current);
                         intervalRef.current = null;
-                        onFinish(); // Call onFinish when countdown completes
-                        return totalSeconds; // Stop at totalSeconds
+                        onFinish();
+                        return totalSeconds;
                     }
                 });
                 setTotalSecondsPassed(prevTotal => prevTotal + 1);
@@ -71,42 +69,38 @@ export const useCountdownTimer = (totalSeconds: number, isActive: boolean, onFin
         };
     }, [isActive, totalSeconds, onFinish, setTotalSecondsPassed]);
 
-    //this is counting down reps when the round is complete
     useEffect(() => {
-        if (isActive && repsRemaining > 1 && secondsPassed % oneRoundSeconds === 0) {
-            setRepsRemaining((totalSeconds - secondsPassed) / oneRoundSeconds);
+        if (isActive && repsRemaining >= 0 && secondsPassed % oneRoundSeconds === 0) {
+            const remainingReps = Math.ceil((totalSeconds - secondsPassed) / oneRoundSeconds);
+            setRepsRemaining(remainingReps);
         }
-    }, [repsRemaining, isActive, oneRoundSeconds, secondsPassed, totalSeconds, totalReps]);
+    }, [repsRemaining, isActive, oneRoundSeconds, secondsPassed, totalSeconds]);
 
-    //this displays the total seconds for XY and Tabata timers wihtout dividing it by the reps at the non-started initial state
     useEffect(() => {
-        let updatedOneRoundSecondsLeft;
+        let updatedOneRoundSecondsLeft: number;
 
-        // Determine the remaining time for the current round
         if (secondsPassed === 0) {
-            // Initial state: Full work time minus rest
             updatedOneRoundSecondsLeft = oneRoundSeconds - oneRoundSecondsRest;
+        } else if (secondsPassed >= totalSeconds) {
+            updatedOneRoundSecondsLeft = 0;
         } else if (secondsPassed % oneRoundSeconds === 0) {
-            // At the start of a new round (reset to work duration)
             updatedOneRoundSecondsLeft = oneRoundSecondsWork;
         } else if (secondsPassed % oneRoundSeconds < oneRoundSecondsWork) {
-            // During work period
             updatedOneRoundSecondsLeft = oneRoundSecondsWork - (secondsPassed % oneRoundSeconds);
-        } else {
-            // During rest period
-            updatedOneRoundSecondsLeft = oneRoundSeconds - (secondsPassed % oneRoundSeconds);
-        }
+        } else if (secondsPassed % oneRoundSeconds >= oneRoundSecondsWork) {
+            updatedOneRoundSecondsLeft = (totalSeconds - secondsPassed) % oneRoundSeconds;
+        } else updatedOneRoundSecondsLeft = (totalSeconds - secondsPassed) % oneRoundSeconds;
 
         setOneRoundSecondsLeft(updatedOneRoundSecondsLeft);
-    }, [secondsPassed, oneRoundSeconds, oneRoundSecondsWork, oneRoundSecondsRest]);
+    }, [secondsPassed, oneRoundSeconds, oneRoundSecondsWork, oneRoundSecondsRest, totalSeconds]);
 
     useEffect(() => {
         if (secondsPassed % oneRoundSeconds < oneRoundSecondsWork) {
-            setIsWorkPhase(true); // Work period
+            setIsWorkPhase(true);
         } else {
-            setIsWorkPhase(false); // Rest period
+            setIsWorkPhase(false);
         }
     }, [secondsPassed, oneRoundSeconds, oneRoundSecondsWork]);
 
-    return { secondsPassed, setSecondsPassed, fastforward, repsRemaining, oneRoundSecondsLeft, isWorkPhase };
+    return { secondsPassed, setSecondsPassed, fastforward, repsRemaining, setRepsRemaining, oneRoundSecondsLeft, isWorkPhase, oneRoundSeconds, totalReps };
 };
