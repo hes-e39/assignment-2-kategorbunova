@@ -22,7 +22,7 @@ export type TimersContextType = {
     resetTimers: () => void;
     resetAll: boolean;
     // fastforward: boolean;
-    // fastforwardTimer: () => void;
+    removeAllTimers: () => void;
     totalSecondsPassed: number;
     currentTimerIndex: number;
     totalQueueSeconds: number;
@@ -47,8 +47,7 @@ export const TimersContext = createContext<TimersContextType>({
     removeLastTimer: () => {},
     resetTimers: () => {},
     resetAll: false,
-    // fastforward: false,
-    // fastforwardTimer: () => {},
+    removeAllTimers: () => {},
     totalSecondsPassed: 0,
     currentTimerIndex: 0,
     totalQueueSeconds: 0,
@@ -81,7 +80,21 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const removeLastTimer = () => {
-        setTimersArray(prevArray => prevArray.slice(0, -1));
+        setTimersArray(prevArray => {
+            // edge case for removing the first timer
+            if (prevArray.length === 1 && totalSecondsPassed === 0) {
+                return prevArray.slice(0, -1);
+            } else if (prevArray.length > 1) {
+                return prevArray.slice(0, -1);
+            }
+            alert('Cannot undo a timer that has already started. Please remove all.');
+            return prevArray;
+        });
+    };
+
+    const removeAllTimers = () => {
+        setTimersArray([]);
+        setTotalSecondsPassed(0);
     };
 
     const [resetAll, setResetAll] = useState(false);
@@ -107,6 +120,7 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
                 timerInputs,
                 handleInputChange,
                 removeLastTimer,
+                removeAllTimers,
                 resetTimers,
                 resetAll,
                 totalSecondsPassed,

@@ -5,7 +5,7 @@ import { Button, Buttons, TimeDisplay, Timer, TimerContainer, TimerTitle } from 
 const Tabata = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, onFinish }) => {
     const totalSecondsRest = convertToSeconds(timeMinInputRest, timeSecInputRest) * repInput;
 
-    const { secondsPassed, fastforward, repsRemaining, oneRoundSecondsLeft } = useCountdownTimer(totalSeconds, isActive, onFinish, repInput, totalSecondsRest);
+    const { secondsPassed, fastforward, repsRemaining, oneRoundSecondsLeft, isWorkPhase } = useCountdownTimer(totalSeconds, isActive, onFinish, repInput, totalSecondsRest);
 
     // const [timeMinInputRest, setTimeMinInputRest] = useState('');
     // const [timeSecInputRest, setTimeSecInputRest] = useState('');
@@ -138,14 +138,18 @@ const Tabata = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSe
     //     };
     // }, [status, secondsRemainingWork, secondsRemainingRest, repInput, repRemaining, totalSecondsWork]);
 
+    const timerStyle = {
+        color: isWorkPhase ? 'green' : 'blue', // Green for work, red for rest
+    };
+
     return (
         <div className="App">
             <TimerContainer isActive={isActive}>
                 <TimerTitle>Tabata</TimerTitle>
-                <Timer>
-                    {totalSeconds}
+                <Timer isActive={isActive}>
                     <TimeDisplay isActive={isActive}>
-                        <div>
+                        <div style={timerStyle}>
+                            {isWorkPhase ? 'Work ' : 'Rest '}
                             <>
                                 Left {Math.floor(oneRoundSecondsLeft / 60)}:{oneRoundSecondsLeft % 60}
                             </>
@@ -154,12 +158,14 @@ const Tabata = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSe
                         <div style={{ fontSize: '14px' }}>On round</div> {repsRemaining}
                     </TimeDisplay>
                 </Timer>
-                <Buttons>
+            </TimerContainer>
+            <Buttons>
+                {isActive === true && (
                     <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
                         Forward
                     </Button>
-                </Buttons>
-            </TimerContainer>
+                )}
+            </Buttons>
             {/* text display at the initial state to indicate the intervals for work and rest 
                     {status === STATUS.INITIAL && (
                         <div style={{ display: 'flex', gap: '68px', fontSize: '11px', justifyContent: 'left', color: 'grey', marginLeft: '37px' }}>

@@ -1,12 +1,16 @@
-//import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useCountdownTimer } from '../../hooks/useCountdownTimer';
 import { DisplayRepsForText } from '../../utils/helpers';
 import { TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 import { Button, Buttons } from '../../utils/styles';
-//import { TimersContext } from '../../views/TimerProvider';
+import { TimersContext } from '../../views/TimerProvider';
 
-const Countdown = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, onFinish }) => {
-    const { secondsPassed, fastforward } = useCountdownTimer(totalSeconds, isActive, onFinish, repInput);
+const Countdown = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, isCurrent, onFinish }) => {
+    const { secondsPassed, setSecondsPassed, fastforward } = useCountdownTimer(totalSeconds, isActive, onFinish, repInput);
+
+    const { totalSecondsPassed, currentTimerIndex, timersArray } = useContext(TimersContext);
+
+    // Calculate the remaining time
 
     // const { timersArray } = useContext(TimersContext);
     //const { resetAll } = useContext(TimersContext);
@@ -99,6 +103,16 @@ const Countdown = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, tim
     //     };
     // }, [isActive, totalSeconds, onFinish, setTotalSecondsPassed]);
 
+    useEffect(() => {
+        if (isCurrent) {
+            // Calculate how many seconds have passed for this timer
+            const timerElapsedTime = totalSecondsPassed - timersArray.slice(0, currentTimerIndex).reduce((total, timer) => total + timer.totalSeconds, 0);
+            setSecondsPassed(Math.max(0, timerElapsedTime));
+        }
+    }, [totalSecondsPassed, currentTimerIndex, isCurrent, timersArray, setSecondsPassed]);
+
+    const remainingTime = totalSeconds - secondsPassed;
+
     return (
         <div className="App">
             <TimerContainer isActive={isActive}>
@@ -106,15 +120,17 @@ const Countdown = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, tim
                 <Timer>
                     <DisplayRepsForText repInput={repInput} />
                     <TimeDisplay>
-                        {Math.floor((totalSeconds - secondsPassed) / 60)}:{(totalSeconds - secondsPassed) % 60}
+                        {Math.floor(remainingTime / 60)}:{remainingTime % 60}
                     </TimeDisplay>
                 </Timer>
-                <Buttons>
+            </TimerContainer>
+            <Buttons>
+                {isActive === true && (
                     <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
                         Forward
                     </Button>
-                </Buttons>
-            </TimerContainer>
+                )}
+            </Buttons>
         </div>
     );
 };

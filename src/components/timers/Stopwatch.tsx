@@ -83,18 +83,20 @@ const Stopwatch = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, tim
         <div className="App">
             <TimerContainer isActive={isActive}>
                 <TimerTitle>Stopwatch</TimerTitle>
-                <Timer>
+                <Timer isActive={isActive}>
                     <TimeDisplay>
                         <DisplayRepsForText repInput={repInput} />
                         {Math.floor(secondsPassed / 60)}:{secondsPassed % 60}
                     </TimeDisplay>
                 </Timer>
-                <Buttons>
+            </TimerContainer>
+            <Buttons>
+                {isActive === true && (
                     <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
                         Forward
                     </Button>
-                </Buttons>
-            </TimerContainer>
+                )}
+            </Buttons>
         </div>
     );
 };

@@ -88,7 +88,7 @@ const XY = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSecInp
         <div className="App">
             <TimerContainer isActive={isActive}>
                 <TimerTitle>XY</TimerTitle>
-                <Timer>
+                <Timer isActive={isActive}>
                     <TimeDisplay isActive={isActive}>
                         <div style={{ fontSize: '14px' }}>Left</div>
                         <div>
@@ -98,12 +98,14 @@ const XY = ({ timeMinInput, timeSecInput, repInput, timeMinInputRest, timeSecInp
                         <div style={{ fontSize: '14px' }}>On round</div> {repsRemaining}
                     </TimeDisplay>
                 </Timer>
-                <Buttons>
+            </TimerContainer>
+            <Buttons>
+                {isActive === true && (
                     <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
                         Forward
                     </Button>
-                </Buttons>
-            </TimerContainer>
+                )}
+            </Buttons>
         </div>
     );
 };

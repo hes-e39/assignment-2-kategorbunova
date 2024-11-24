@@ -38,7 +38,7 @@ const TimerContainer = styled.div<TimerContainerProps>`
   flex-grow: 1;
 `;
 
-const Timer = styled.div`
+const Timer = styled.div<TimerContainerProps>`
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -67,7 +67,7 @@ color: white;
 margin: 0.25em;
 border-radius: 10px;
 border: 2px solid;
-width: 60px;
+width: 100px;
 height: 30px;
 background-color: ${props => (props.isActive ? 'maroon' : 'green')}; 
 `;
@@ -89,8 +89,8 @@ const Inputs = styled.div`
 `;
 
 const SupportText = styled.div`
-  font-size: 0.75rem; 
-  color: lightgrey; 
+  font-size: 0.8rem; 
+  color: grey; 
   padding: 0.5rem;
   display: flex;
   gap: 1.5px;
