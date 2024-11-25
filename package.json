@@ -2,7 +2,7 @@
     "name": "react-ts-template",
     "private": true,
     "version": "1.0.0",
-    "homepage": "https://hes-e39.github.io/react-ts-template/",
+    "homepage": "https://hes-e39.github.io/assignment-2-kategorbunova/",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -14,7 +14,8 @@
     "dependencies": {
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "react-router-dom": "^6.26.2"
+        "react-router-dom": "^6.26.2",
+        "styled-components": "^6.1.13"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
@@ -34,5 +35,10 @@
         "typescript-eslint": "^8.0.0",
         "vite": "^5.4.0",
         "vite-plugin-checker": "^0.7.2"
-    }
+    },
+    "description": "[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/YPPMpBcq) # Assignment 2",
+    "main": "postcss.config.js",
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }
