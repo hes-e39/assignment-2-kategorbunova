@@ -1,11 +1,13 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useCountdownTimer } from '../../hooks/useCountdownTimer';
+import { useRepsSync } from '../../hooks/useRepsSync';
+import { useTimerSync } from '../../hooks/useTimerSync';
 import type { TimerProps } from '../../utils/TimerProps';
 import { convertToSeconds } from '../../utils/helpers';
 import { Button, Buttons, TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 import { TimersContext } from '../../views/TimerProvider';
 
-const XY: React.FC<TimerProps> = ({ repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, isCurrent, onFinish }) => {
+const XY: React.FC<TimerProps> = ({ repInput, timeMinInputRest, timeSecInputRest, totalSeconds, isActive, isCurrent, isFinished, onFinish }) => {
     const totalSecondsRest = convertToSeconds(timeMinInputRest || 0, timeSecInputRest || 0) * Number(repInput);
 
     const { secondsPassed, setSecondsPassed, fastforward, repsRemaining, setRepsRemaining, oneRoundSeconds, oneRoundSecondsLeft } = useCountdownTimer(
@@ -17,19 +19,8 @@ const XY: React.FC<TimerProps> = ({ repInput, timeMinInputRest, timeSecInputRest
     );
     const { totalSecondsPassed, currentTimerIndex, timersArray } = useContext(TimersContext);
 
-    useEffect(() => {
-        if (isCurrent) {
-            const timerElapsedTime = totalSecondsPassed - timersArray.slice(0, currentTimerIndex).reduce((total, timer) => total + timer.totalSeconds, 0);
-            setSecondsPassed(Math.max(0, timerElapsedTime));
-        }
-    }, [totalSecondsPassed, currentTimerIndex, isCurrent, timersArray, setSecondsPassed]);
-
-    useEffect(() => {
-        if (isCurrent) {
-            const remainingReps = Math.ceil((totalSeconds - secondsPassed) / oneRoundSeconds);
-            setRepsRemaining(remainingReps);
-        }
-    }, [oneRoundSeconds, secondsPassed, totalSeconds, isCurrent, setRepsRemaining]);
+    useTimerSync({ isCurrent, isFinished, totalSeconds, totalSecondsPassed, currentTimerIndex, timersArray, setSecondsPassed });
+    useRepsSync({ isCurrent, isFinished, totalSeconds, secondsPassed, oneRoundSeconds, setRepsRemaining });
 
     return (
         <div className="App">
@@ -47,7 +38,7 @@ const XY: React.FC<TimerProps> = ({ repInput, timeMinInputRest, timeSecInputRest
                 </Timer>
             </TimerContainer>
             <Buttons>
-                {isActive === true && (
+                {isCurrent === true && (
                     <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
                         Forward
                     </Button>

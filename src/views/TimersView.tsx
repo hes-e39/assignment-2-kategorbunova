@@ -19,6 +19,7 @@ interface TimerProps {
     totalSeconds: number;
     isActive: boolean;
     isCurrent: boolean;
+    isFinished: boolean;
     onFinish: () => void;
 }
 
@@ -118,7 +119,9 @@ const TimersView = () => {
                         <div key={`timer-${index}`}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ fontSize: '1.5rem' }}>
-                                    Timer {index + 1} {index === currentTimerIndex && '(Active)'}
+                                    Timer {index + 1}
+                                    {index === currentTimerIndex && ' (Active)'}
+                                    {index < currentTimerIndex && ' (Finished)'}
                                 </div>
                                 <div style={{ fontStyle: 'italic' }}>Total seconds: {timer.totalSeconds}</div>
                             </div>
@@ -131,6 +134,7 @@ const TimersView = () => {
                                 totalSeconds={timer.totalSeconds}
                                 isActive={index === currentTimerIndex && statusQueue === STATUS.STARTED}
                                 isCurrent={index === currentTimerIndex && statusQueue !== STATUS.INITIAL}
+                                isFinished={index < currentTimerIndex}
                                 onFinish={handleTimerFinish}
                             />
                         </div>

@@ -7,5 +7,6 @@ export interface TimerProps {
     totalSeconds: number;
     isActive: boolean;
     isCurrent: boolean;
+    isFinished: boolean;
     onFinish: () => void;
 }

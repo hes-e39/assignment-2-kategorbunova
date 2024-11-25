@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import DocumentComponent from '../components/documentation/DocumentComponent';
 
 //import Loading from "../components/generic/Loading";
-import { DisplayForTime, DisplayTimeForText } from '../../src/utils/helpers.ts';
+import { DisplayForTime } from '../../src/utils/helpers.ts';
 import { Button, TimeDisplay, TimerContainer } from '../utils/styles.tsx';
 
 const Container = styled.div`
@@ -19,9 +19,9 @@ const Documentation = () => {
     return (
         <Container>
             <div>
-                <DocumentComponent
+                {/* <DocumentComponent
                     title="DisplayTimeForText "
-                    component={<DisplayTimeForText totalSeconds={80} timeSecInput={80} />}
+                    component={<DisplayTimeForText timeMinInput={1} timeSecInput={80} />}
                     propDocs={[
                         {
                             prop: 'totalSeconds',
@@ -36,10 +36,10 @@ const Documentation = () => {
                             defaultValue: "''",
                         },
                     ]}
-                />
+                /> */}
                 <DocumentComponent
                     title="DisplayForTime "
-                    component={<DisplayForTime hoursOnTimer={0} minutesOnTimer={1} secondsOnTimer={10} />}
+                    component={<DisplayForTime minutesOnTimer={1} secondsOnTimer={10} />}
                     propDocs={[
                         {
                             prop: 'hoursOnTimer',

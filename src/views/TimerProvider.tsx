@@ -14,11 +14,13 @@ export type Timer = {
     repInput: string;
 };
 
+type TimerTitle = 'Stopwatch' | 'Countdown' | 'XY' | 'Tabata';
+
 export type TimersContextType = {
     timersArray: Timer[];
     timerInputs: typeof initialTimerInputs;
-    addTimer: (title: string) => void;
-    handleInputChange: (title: string, field: string, value: string) => void;
+    addTimer: (title: TimerTitle) => void;
+    handleInputChange: (title: TimerTitle, field: string, value: string) => void;
     removeLastTimer: () => void;
     resetTimers: () => void;
     resetAll: boolean;
@@ -27,7 +29,7 @@ export type TimersContextType = {
     currentTimerIndex: number;
     totalQueueSeconds: number;
     statusQueue: StatusType;
-    setTotalSecondsPassed: (value: number) => void;
+    setTotalSecondsPassed: React.Dispatch<React.SetStateAction<number>>;
     setCurrentTimerIndex: (index: number) => void;
     setStatusQueue: (status: StatusType) => void;
 };
@@ -62,14 +64,22 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
     const [timerInputs, setTimerInputs] = useState(initialTimerInputs);
     const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
     const [totalSecondsPassed, setTotalSecondsPassed] = useState<number>(0);
-    const [statusQueue, setStatusQueue] = useState(STATUS.INITIAL);
+    const [statusQueue, setStatusQueue] = useState<StatusType>(STATUS.INITIAL);
 
-    const handleInputChange = (title: string, field: string, value: string) => {
+    const handleInputChange = (title: TimerTitle, field: string, value: string) => {
         setTimerInputs(prevInputs => ({ ...prevInputs, [title]: { ...prevInputs[title], [field]: value } }));
     };
 
-    const addTimer = (title: string) => {
-        const { timeMinInput = '0', timeSecInput = '0', timeMinInputRest = '0', timeSecInputRest = '0', repInput = '1' } = timerInputs[title];
+    const addTimer = (title: TimerTitle) => {
+        const timer = timerInputs[title] as {
+            timeMinInput: string;
+            timeSecInput: string;
+            timeMinInputRest?: string;
+            timeSecInputRest?: string;
+            repInput?: string;
+        };
+
+        const { timeMinInput = '0', timeSecInput = '0', timeMinInputRest = '0', timeSecInputRest = '0', repInput = '1' } = timer;
         const totalSeconds = TotalSeconds(timeMinInput, timeSecInput, timeMinInputRest, timeSecInputRest, repInput);
 
         if (InputsValidation(totalSeconds) === false) {
@@ -84,7 +94,7 @@ export const TimersProvider = ({ children }: { children: ReactNode }) => {
             // edge case for removing the first timer
             if (prevArray.length === 1 && totalSecondsPassed === 0) {
                 return prevArray.slice(0, -1);
-            } else if (prevArray.length > 1) {
+            } else if (prevArray.length - 1 > currentTimerIndex) {
                 return prevArray.slice(0, -1);
             }
             alert('Cannot undo a timer that has already started. Please remove all.');

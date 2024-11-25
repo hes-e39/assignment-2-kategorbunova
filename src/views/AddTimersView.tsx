@@ -3,6 +3,7 @@ import Countdown from '../components/timers/Countdown';
 import Stopwatch from '../components/timers/Stopwatch';
 import Tabata from '../components/timers/Tabata';
 import XY from '../components/timers/XY';
+import type { TimerProps } from '../utils/TimerProps';
 import { DisplayRepsForText, DisplayTimeForText } from '../utils/helpers';
 import { Button, Buttons, Input, Inputs, MainText, SupportText, Timers } from '../utils/styles';
 import { TimersContext } from './TimerProvider';
@@ -10,7 +11,9 @@ import { TimersContext } from './TimerProvider';
 const AddTimersView = () => {
     const { addTimer, timersArray, timerInputs, handleInputChange, removeLastTimer, removeAllTimers, totalQueueSeconds, totalSecondsPassed, currentTimerIndex } = useContext(TimersContext);
 
-    const timers = [
+    type TimerTitle = 'Stopwatch' | 'Countdown' | 'XY' | 'Tabata';
+
+    const timers: { title: TimerTitle; C: React.ComponentType<TimerProps> }[] = [
         { title: 'Stopwatch', C: Stopwatch },
         { title: 'Countdown', C: Countdown },
         { title: 'XY', C: XY },
@@ -96,13 +99,19 @@ const AddTimersView = () => {
             <ol style={{ textAlign: 'left', position: 'relative', left: '40%' }}>
                 {timersArray.map((timer, index) => {
                     const isStarted = index <= currentTimerIndex;
+                    const isFinished = index < currentTimerIndex;
+                    const timerElapsedTime = totalSecondsPassed - timersArray.slice(0, currentTimerIndex).reduce((total, timer) => total + timer.totalSeconds, 0);
                     return (
-                        <li key={index} style={{ listStylePosition: 'inside', color: isStarted && totalSecondsPassed > 0 ? 'gray' : 'black' }}>
+                        <li
+                            key={index}
+                            style={{ listStylePosition: 'inside', color: ((isStarted || isFinished) && timerElapsedTime > 0) || totalSecondsPassed === totalQueueSeconds ? 'gray' : 'black' }}
+                        >
                             {DisplayTimeForText(timer.timeMinInput, timer.timeSecInput)}
                             {(Number(timer.timeSecInputRest) !== 0 || Number(timer.timeMinInputRest) !== 0) && (
                                 <> (Work) + {DisplayTimeForText(timer.timeMinInputRest, timer.timeSecInputRest)} (Rest)</>
                             )}
-                            <DisplayRepsForText repInput={Number(timer.repInput)} /> ({timer.title}){isStarted && totalSecondsPassed > 0 && ' (started)'}
+                            <DisplayRepsForText repInput={Number(timer.repInput)} /> ({timer.title}){isStarted && timerElapsedTime > 0 && !isFinished && ' (started)'}
+                            {isFinished && ' (finished)'}
                         </li>
                     );
                 })}

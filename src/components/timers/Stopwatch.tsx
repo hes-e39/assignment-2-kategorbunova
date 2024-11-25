@@ -1,24 +1,18 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useCountdownTimer } from '../../hooks/useCountdownTimer';
+import { useTimerSync } from '../../hooks/useTimerSync';
 import type { TimerProps } from '../../utils/TimerProps';
 import { DisplayRepsForText } from '../../utils/helpers';
 import { TimeDisplay, Timer, TimerContainer, TimerTitle } from '../../utils/styles';
 import { Button, Buttons } from '../../utils/styles';
 import { TimersContext } from '../../views/TimerProvider';
 
-const Stopwatch: React.FC<TimerProps> = ({ repInput, totalSeconds, isActive, isCurrent, onFinish }) => {
+const Stopwatch: React.FC<TimerProps> = ({ repInput, totalSeconds, isActive, isCurrent, onFinish, isFinished }) => {
     const { totalSecondsPassed, currentTimerIndex, timersArray } = useContext(TimersContext);
 
     const { secondsPassed, setSecondsPassed, fastforward } = useCountdownTimer(totalSeconds, isActive, onFinish, Number(repInput), 0);
 
-    useEffect(() => {
-        if (isCurrent) {
-            const timerElapsedTime = totalSecondsPassed - timersArray.slice(0, currentTimerIndex).reduce((total, timer) => total + timer.totalSeconds, 0);
-            setSecondsPassed(Math.max(0, timerElapsedTime));
-        }
-    }, [totalSecondsPassed, currentTimerIndex, isCurrent, timersArray, setSecondsPassed]);
-
-    const remainingTime = totalSeconds - secondsPassed;
+    useTimerSync({ isCurrent, isFinished, totalSeconds, totalSecondsPassed, currentTimerIndex, timersArray, setSecondsPassed });
 
     return (
         <div className="App">
@@ -27,12 +21,12 @@ const Stopwatch: React.FC<TimerProps> = ({ repInput, totalSeconds, isActive, isC
                 <Timer isActive={isActive}>
                     <TimeDisplay>
                         <DisplayRepsForText repInput={Number(repInput)} />
-                        {Math.floor(remainingTime / 60)}:{remainingTime % 60}
+                        {Math.floor(secondsPassed / 60)}:{secondsPassed % 60}
                     </TimeDisplay>
                 </Timer>
             </TimerContainer>
             <Buttons>
-                {isActive === true && (
+                {isCurrent === true && (
                     <Button onClick={fastforward} style={{ backgroundColor: 'darkgreen' }}>
                         Forward
                     </Button>
